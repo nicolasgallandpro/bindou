@@ -7,3 +7,6 @@ The goal of this project is :
 * create .bindou.env file using the template/example. 
 * create a Caddyfile using the template/example.
 * you also need to have a .env file with at least the variable COMPOSE_PRJECT_NAME set
+  
+to run the project : 
+=> docker-compose up -d 
