@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{Dagyter}</title>
+</head>
+
+<body>
+        <div id="menu_back">
+	</div>
+
+
+<script>
+	window.menu_back = document.querySelector('#menu_back')    
+	
+	//helpers
+	let root = document.documentElement;
+	let activate = (app) => {
+		window.apps_names.map(a => {
+			root.style.setProperty('--display-'+a, "none");
+			root.style.setProperty('--color-'+a, "transparent");
+		})
+		root.style.setProperty('--display-'+app, "block");
+		root.style.setProperty('--color-'+app, "white");
+	}
+	function addApp(app, url, logo, link){
+		// ajoute les variables css
+		root.style.setProperty('--display-'+app, "none");
+		root.style.setProperty('--color-'+app, "transparent");	
+		
+		//ajout de l'entree dans le menu
+		
+		if(link != 'true'){
+			menu_back.innerHTML = menu_back.innerHTML + 
+				`<img class="logo" id="logo_${app}" src="${logo}" onclick="activate('${app}')" style="background-color: var(--color-${app})"/>`
+		}else {
+			menu_back.innerHTML = menu_back.innerHTML + 
+			`<a href="${url}" target="_blank"><img class="logo" id="logo_${app}" src="${logo}"  style="background-color: var(--color-${app})"/></a>`
+		}
+		// iframe
+		if(link != 'true'){
+			let iframe = document.createElement('iframe');
+        		iframe.src = url;
+        		iframe.id = app;
+			iframe.style = `display: var(--display-${app});`
+        		document.body.appendChild(iframe);
+		}
+	}
+	
+	//interpret conf
+	const interpretConf = function(){
+		window.apps_names.map( app => {
+			conf = window.apps[app];
+			if (conf['LOGO']) addApp(app, conf['URL'], conf['LOGO'], conf['LINK'])
+		});
+	}
+
+	//retrieve conf
+	var myHeaders = new Headers();
+	myHeaders.append('pragma', 'no-cache');
+	myHeaders.append('cache-control', 'no-cache');
+	var myInit = {method: 'GET', headers: myHeaders};
+	fetch('environment_settings', myInit).then(
+		function(response) {
+        		response.text().then(function(text) {
+				window.data = text;
+				lines = text.split('\n');
+				window.apps = {}
+				window.apps_names = []
+				lines.map(l => {
+					if ((!l.includes('=')) || (!l.includes('_'))) return;
+					[key,value] = l.split('=');
+					[app,k] = key.split('_');
+					if (app == 'ENTRY') return;
+					if (!window.apps[app]) {
+						window.apps[app] = {};
+						window.apps_names.push(app)
+					}
+					window.apps[app][k] = value
+				});
+				interpretConf();
+				activate(window.apps_names[0])
+            		});
+        	}
+	);
+
+
+</script>
+
+
+
+    <style>
+    iframe{
+        height: 100%;
+        width: calc(100% - 32px);
+        border:none;
+    }
+    .logo{
+        width: 100%;
+        cursor: pointer;
+	padding:16px 8px 10px 8px;
+    }
+    body{
+        height: 100vh;
+    }
+    #menu_back{
+        width: 40px;
+        height: 100vh;
+        position:absolute;
+        right: 0;
+        top: 0;
+        background-color:aliceblue;
+    }
+
+        /* CSS Reset */
+    * {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        box-sizing: border-box;
+        outline: none;
+        font-weight: normal;
+    }
+    a {
+        color: #000;
+        text-decoration: none;
+    }
+    .container {
+        width: 100%;
+        margin: 0 auto;
+    }
+    </style>
+
+</body>
+</html>

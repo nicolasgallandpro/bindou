@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+
+  bindou:
+    container_name: ${COMPOSE_PROJECT_NAME}_bindou
+    image: caddy
+    env_file:
+      - ./.bindou.env
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+        - ./caddy_data:/data
+        - ./srv:/site
+        - ./Caddyfile:/etc/caddy/Caddyfile
+        - ./.bindou.env:/site/environment_settings
+
