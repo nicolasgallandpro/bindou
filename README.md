@@ -4,6 +4,6 @@ The goal of this project is :
 * make thoses apps accessibles in the one page, via iframes and a right menu that allow to switch between them
   
 ## Installation
-* create .bindou.env file using the template. 
-* create a Caddyfile using the template
-* to have a .env file with at least the variable COMPOSE_PRJECT_NAME set
+* create .bindou.env file using the template/example. 
+* create a Caddyfile using the template/example.
+* you also need to have a .env file with at least the variable COMPOSE_PRJECT_NAME set
